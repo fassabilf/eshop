@@ -16,9 +16,10 @@ public class ProductRepository {
         return product;
     }
 
-    public Iterator<Product> findAll() {
-        return productData.iterator();
+    public List<Product> findAll() {
+        return productData;
     }
+
 
     public Product findById(String id) {
         for (Product product : productData) {
