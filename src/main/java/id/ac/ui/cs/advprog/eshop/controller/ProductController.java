@@ -42,11 +42,9 @@ public class ProductController {
 
         Product product = service.findById(id);
         if (product == null) {
-            System.out.println("DEBUG: Produk dengan ID " + id + " tidak ditemukan, redirect ke /product/list");
             return "redirect:/product/list";
         }
 
-        System.out.println("DEBUG: Produk ditemukan: " + product.getProductId() + " - " + product.getProductName());
         model.addAttribute("product", product);
 
         return "editProduct"; // Pastikan sesuai dengan nama template
