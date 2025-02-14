@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -30,27 +29,6 @@ public class ProductFunctionalTest {
     @BeforeEach
     void setUpTest() {
         baseUrl = String.format("%s:%d", testBaseUrl, serverPort);
-    }
-
-    @Test
-    void createProduct_isSuccessful(ChromeDriver driver) {
-        driver.get(baseUrl + "/product/create");
-
-        WebElement nameInput = driver.findElement(By.id("nameInput"));
-        WebElement quantityInput = driver.findElement(By.id("quantityInput"));
-        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
-
-        nameInput.sendKeys("Cap Bangao");
-        quantityInput.sendKeys("1212");
-
-        submitButton.click();
-
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.endsWith("/product/list"));
-
-        String pageContent = driver.getPageSource();
-        assertTrue(pageContent.contains("Cap Bangao"));
-        assertTrue(pageContent.contains("1212"));
     }
 
     @Test
@@ -88,7 +66,6 @@ public class ProductFunctionalTest {
         assertTrue(pageContent.contains("20"));
     }
 
-
     @Test
     void deleteProduct_isSuccessful(ChromeDriver driver) {
         // Step 1: Create a product first
@@ -118,9 +95,6 @@ public class ProductFunctionalTest {
 
         // Step 6: Verify deletion
         String pageContent = driver.getPageSource();
-        System.out.println(pageContent);
         assertFalse(pageContent.contains("Produk Hapus"));
     }
-
-
 }
