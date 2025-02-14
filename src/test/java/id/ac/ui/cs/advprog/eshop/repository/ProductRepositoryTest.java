@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-//import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Iterator;
 
@@ -17,9 +16,12 @@ class ProductRepositoryTest {
 
     @InjectMocks
     ProductRepository productRepository;
+
     @BeforeEach
     void setUp() {
+        productRepository = new ProductRepository();
     }
+
     @Test
     void testCreateAndFind() {
         Product product = new Product();
@@ -35,11 +37,13 @@ class ProductRepositoryTest {
         assertEquals(product.getProductName(), savedProduct.getProductName());
         assertEquals(product.getProductQuantity(), savedProduct.getProductQuantity());
     }
+
     @Test
     void testFindAllIfEmpty() {
         Iterator<Product> productIterator = productRepository.findAll();
         assertFalse(productIterator.hasNext());
     }
+
     @Test
     void testFindAllIfMoreThanOneProduct() {
         Product product1 = new Product();
@@ -61,5 +65,44 @@ class ProductRepositoryTest {
         savedProduct = productIterator.next();
         assertEquals(product2.getProductId(), savedProduct.getProductId());
         assertFalse(productIterator.hasNext());
+    }
+
+    @Test
+    void testUpdateProduct() {
+        Product product = new Product();
+        product.setProductId("12345");
+        product.setProductName("Shampoo Original");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        // Update data
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId("12345");
+        updatedProduct.setProductName("Shampoo Premium");
+        updatedProduct.setProductQuantity(20);
+        Product result = productRepository.update(updatedProduct);
+
+        assertNotNull(result);
+        assertEquals("12345", result.getProductId());
+        assertEquals("Shampoo Premium", result.getProductName());
+        assertEquals(20, result.getProductQuantity());
+    }
+
+    @Test
+    void testDeleteProduct() {
+        Product product = new Product();
+        product.setProductId("99999");
+        product.setProductName("Sabun Mewah");
+        product.setProductQuantity(5);
+        productRepository.create(product);
+
+        // Pastikan produk ada sebelum dihapus
+        assertNotNull(productRepository.findById("99999"));
+
+        // Hapus produk
+        productRepository.delete("99999");
+
+        // Pastikan produk sudah tidak ada
+        assertNull(productRepository.findById("99999"));
     }
 }
