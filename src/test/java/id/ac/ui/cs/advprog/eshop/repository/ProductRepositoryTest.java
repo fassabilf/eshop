@@ -105,4 +105,78 @@ class ProductRepositoryTest {
         // Pastikan produk sudah tidak ada
         assertNull(productRepository.findById("99999"));
     }
+
+    @Test
+    void testFindByIdNotFound() {
+        Product result = productRepository.findById("non-existing-id");
+        assertNull(result, "Produk dengan ID yang tidak ada seharusnya mengembalikan null.");
+    }
+
+    @Test
+    void testUpdateProductNotFound() {
+        Product product = new Product();
+        product.setProductId("not-exist");
+        product.setProductName("Non Existing Product");
+        product.setProductQuantity(99);
+
+        Product result = productRepository.update(product);
+
+        assertNotNull(result);
+        assertEquals("not-exist", result.getProductId());
+        assertEquals("Non Existing Product", result.getProductName());
+        assertEquals(99, result.getProductQuantity());
+    }
+    @Test
+    void testFindByIdNotFoundLoopCompletes() {
+        // Tambahkan beberapa produk, tapi tanpa ID yang dicari
+        Product product1 = new Product();
+        product1.setProductId("id-1");
+        product1.setProductName("Product 1");
+        product1.setProductQuantity(10);
+        productRepository.create(product1);
+
+        Product product2 = new Product();
+        product2.setProductId("id-2");
+        product2.setProductName("Product 2");
+        product2.setProductQuantity(20);
+        productRepository.create(product2);
+
+        // Cari produk yang tidak ada dalam list
+        Product result = productRepository.findById("non-existing-id");
+
+        // Pastikan loop berjalan sampai akhir dan return null
+        assertNull(result, "Produk dengan ID yang tidak ada seharusnya mengembalikan null.");
+    }
+
+    @Test
+    void testUpdateProductNotFoundLoopCompletes() {
+        // Tambahkan beberapa produk, tapi tidak ada yang cocok dengan ID yang dicari
+        Product product1 = new Product();
+        product1.setProductId("id-1");
+        product1.setProductName("Product 1");
+        product1.setProductQuantity(10);
+        productRepository.create(product1);
+
+        Product product2 = new Product();
+        product2.setProductId("id-2");
+        product2.setProductName("Product 2");
+        product2.setProductQuantity(20);
+        productRepository.create(product2);
+
+        // Produk yang akan di-update (ID tidak ada dalam list)
+        Product productToUpdate = new Product();
+        productToUpdate.setProductId("non-existing-id");
+        productToUpdate.setProductName("New Product");
+        productToUpdate.setProductQuantity(99);
+
+        // Lakukan update
+        Product result = productRepository.update(productToUpdate);
+
+        // Pastikan produk yang dikembalikan adalah yang baru tanpa perubahan
+        assertNotNull(result);
+        assertEquals("non-existing-id", result.getProductId());
+        assertEquals("New Product", result.getProductName());
+        assertEquals(99, result.getProductQuantity());
+    }
+
 }
