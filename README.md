@@ -9,7 +9,8 @@
 
 ## **Reflection**
 ### **List of Modules**
-1. **Module 1** - Coding Standards
+1. [**Module 1** - Coding Standards](#module-1)
+2. [**Module 2** - CI/CD & DevOps](#module-2)
 
 ---
 
@@ -135,3 +136,27 @@ Functional test awalnya mengandung duplikasi dalam setup dan pengujian CRUD.
       - Sekarang, test akan mencari produk dengan `//tr[td[contains(text(),'Produk Hapus')]]` sebelum menghapusnya.
 
 ---
+
+## **Module 2**
+Link Deployment: https://diverse-jenelle-fassabilf-60f284af.koyeb.app/
+### **1. Perbaikan Kualitas Kode**
+Selama latihan ini, saya melakukan beberapa perbaikan pada kode untuk meningkatkan kualitasnya, terutama berdasarkan hasil analisis **PMD** dan **pengujian unit test**:
+- **Unit test diperbaiki hingga 100% coverage** untuk memastikan semua bagian kode diuji dengan baik.
+- **Return dari controller disesuaikan** agar lebih konsisten dan menghindari error yang tidak terdeteksi.
+- **Masalah yang diindikasi oleh PMD diselesaikan**, termasuk:
+    - Menghapus **import yang tidak digunakan**.
+    - Menghilangkan **modifier yang tidak perlu dalam interface**.
+    - Memastikan **setiap class memiliki konstruktor yang sesuai** jika bersifat utility.
+
+Perbaikan ini memastikan kode lebih bersih, aman, dan sesuai dengan standar yang baik.
+
+---
+
+### **2. Evaluasi CI/CD**
+Implementasi **CI/CD sudah sesuai** dengan prinsip **Continuous Integration** dan **Continuous Deployment** karena mencakup **4 workflow utama**:
+1. **Unit test** dijalankan secara otomatis untuk memverifikasi bahwa semua kode tetap berfungsi dengan baik.
+2. **Analisis PMD** dilakukan untuk menjaga standar kualitas kode dan mendeteksi potensi masalah.
+3. **OSSF Scorecard** digunakan untuk mengevaluasi tingkat keamanan dan keandalan proyek berdasarkan best practices open source.
+4. **Continuous Deployment menggunakan Koyeb**, sehingga setiap perubahan yang telah melewati CI dapat langsung dideploy ke server tanpa perlu intervensi manual.
+
+Dengan pipeline ini, setiap perubahan kode diuji dan dideploy secara otomatis, sehingga pengembangan lebih **efisien**, **cepat**, dan **terpercaya**.
