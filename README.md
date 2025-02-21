@@ -160,3 +160,7 @@ Implementasi **CI/CD sudah sesuai** dengan prinsip **Continuous Integration** da
 4. **Continuous Deployment menggunakan Koyeb**, sehingga setiap perubahan yang telah melewati CI dapat langsung dideploy ke server tanpa perlu intervensi manual.
 
 Dengan pipeline ini, setiap perubahan kode diuji dan dideploy secara otomatis, sehingga pengembangan lebih **efisien**, **cepat**, dan **terpercaya**.
+
+---
+Bonus Coverage 100%:
+![Jacoco 100%](Module2Bonus.png)
