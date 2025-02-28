@@ -11,7 +11,7 @@
 ### **List of Modules**
 1. [**Module 1** - Coding Standards](#module-1)
 2. [**Module 2** - CI/CD & DevOps](#module-2)
-
+3. [**Module 3** - Maintainability & OO Principles](#module-3)
 ---
 
 ## **Module 1**
@@ -164,3 +164,53 @@ Dengan pipeline ini, setiap perubahan kode diuji dan dideploy secara otomatis, s
 ---
 Bonus Coverage 100%:
 ![Jacoco 100%](Module2Bonus.png)
+
+Berikut adalah tambahan bagian untuk **Module 3: Maintainability & OO Principles** di README.md kamu:
+
+---
+
+## **Module 3**
+### **SOLID Principles yang Diterapkan**
+
+Dalam proyek ini, saya telah menerapkan prinsip-prinsip SOLID berikut:
+
+1. **SRP (Single Responsibility Principle)**  
+   Setiap kelas hanya memiliki satu tanggung jawab utama. Contohnya, `ProductController` hanya menangani request dan response untuk produk, sedangkan `ProductServiceImpl` menangani logika bisnis, dan `ProductRepository` bertugas untuk penyimpanan data. Untuk entitas kendaraan, `CarController` berdiri sendiri tanpa mewarisi dari `ProductController`, sehingga masing-masing controller fokus pada fungsinya.
+
+2. **Prinsip Ekstensi Tanpa Modifikasi**  
+   Meskipun saat ini aplikasi hanya menangani entitas **Car**, struktur kode dirancang agar mudah diperluas di masa depan. Jika nantinya diperlukan penambahan fitur atau jenis entitas baru, saya dapat menambahkannya melalui ekstensi (misalnya, dengan membuat kelas baru atau menambah method melalui subclass) tanpa harus mengubah kode yang sudah ada. Dengan demikian, meskipun tidak ada abstraksi seperti kelas **Vehicle**, kode saat ini sudah cukup fleksibel untuk mengakomodasi perubahan.
+
+3. **LSP (Liskov Substitution Principle)**  
+   Setiap subclass dapat menggantikan kelas induknya tanpa mengubah kebenaran program. Dengan menggunakan abstraksi melalui interface, controller dan service dapat menangani objek dari implementasi apapun secara konsisten tanpa mengganggu perilaku yang diharapkan.
+
+4. **ISP (Interface Segregation Principle)**  
+   Interface yang besar dipecah menjadi interface yang lebih spesifik. Contohnya, `CarService` hanya mencakup metode-metode yang relevan untuk entitas Car, sehingga klien tidak perlu bergantung pada metode yang tidak mereka butuhkan.
+
+5. **DIP (Dependency Inversion Principle)**  
+   Modul tingkat tinggi (misalnya, controller) tidak bergantung pada implementasi konkret, melainkan pada abstraksi (interface). Di `CarController`, dependency disuntikkan melalui interface `CarService` (bukan implementasi langsung seperti `CarServiceImpl`), sehingga bila implementasi service diubah, controller tidak perlu dimodifikasi.
+
+---
+
+### **Keuntungan Menerapkan SOLID**
+
+1. **Peningkatan Maintainability**  
+   Dengan SRP, setiap kelas memiliki satu alasan untuk berubah. Misalnya, jika logika bisnis produk harus diperbarui, hanya service yang akan terpengaruh tanpa menyentuh controller atau repository, sehingga perawatan kode menjadi lebih mudah dan aman.
+
+2. **Kemudahan Ekstensi dan Adaptasi**  
+   Struktur kode yang mendukung ekstensi tanpa perlu modifikasi kode yang sudah ada memungkinkan penambahan fitur baru dengan risiko minimal. Misalnya, jika di masa depan saya ingin menambahkan fitur khusus untuk entitas Car, saya dapat melakukannya melalui subclass atau komposisi tanpa harus mengubah logika dasar yang sudah stabil.
+
+3. **Pengurangan Ketergantungan**  
+   Dengan DIP dan ISP, komponen sistem memiliki coupling yang lebih longgar. Controller yang hanya bergantung pada interface memudahkan penggantian implementasi service dan memfasilitasi pengujian unit karena dependency dapat dengan mudah dimock.
+
+---
+
+### **Kerugian Tidak Menerapkan SOLID**
+
+1. **Kode yang Sulit Dirawat**  
+   Tanpa SRP, satu kelas dapat memiliki banyak tanggung jawab. Misalnya, jika sebuah controller menangani validasi, logika bisnis, dan penyimpanan data sekaligus, perubahan pada satu bagian dapat menyebabkan kerusakan di bagian lain, membuat perawatan kode menjadi lebih kompleks.
+
+2. **Kesulitan dalam Menambah Fitur Baru**  
+   Tanpa prinsip ekstensi tanpa modifikasi, penambahan fitur baru atau entitas lain (misalnya, kendaraan lain) akan mengharuskan perubahan pada banyak modul yang sudah ada, sehingga meningkatkan risiko bug dan regresi.
+
+3. **Ketergantungan yang Tinggi**  
+   Tanpa DIP dan ISP, modul tingkat tinggi akan bergantung langsung pada implementasi konkret. Misalnya, jika `CarController` bergantung langsung pada `CarServiceImpl`, maka setiap perubahan pada service akan berdampak langsung pada controller, mengurangi fleksibilitas dan mempersulit pengujian.
