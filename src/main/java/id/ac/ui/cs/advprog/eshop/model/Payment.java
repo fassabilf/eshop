@@ -14,6 +14,26 @@ public class Payment {
         this.id = id;
         this.method = method;
         this.paymentData = paymentData;
-        this.status = "PENDING";  // Untuk sementara
+        this.status = determineStatus(method, paymentData);
+    }
+
+    private String determineStatus(String method, Map<String, String> paymentData) {
+        if ("VOUCHER".equals(method)) {
+            return validateVoucher(paymentData.get("voucherCode")) ? "SUCCESS" : "REJECTED";
+        } else if ("BANK_TRANSFER".equals(method)) {
+            return validateBankTransfer(paymentData) ? "SUCCESS" : "REJECTED";
+        }
+        return "REJECTED";
+    }
+
+    private boolean validateVoucher(String code) {
+        if (code == null || code.length() != 16) return false;
+        if (!code.startsWith("ESHOP")) return false;
+        return code.replaceAll("\\D", "").length() == 8;
+    }
+
+    private boolean validateBankTransfer(Map<String, String> paymentData) {
+        return paymentData.getOrDefault("bankName", "").length() > 0 &&
+                paymentData.getOrDefault("referenceCode", "").length() > 0;
     }
 }
