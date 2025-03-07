@@ -10,8 +10,10 @@ import org.mockito.Mockito;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import id.ac.ui.cs.advprog.eshop.model.Product;
 
 public class PaymentServiceTest {
     private PaymentServiceImpl paymentService;
@@ -31,7 +33,16 @@ public class PaymentServiceTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
 
-        Order order = new Order("1", null, 1708560000L, "Safira");
+        Product dummyProduct = new Product();
+        dummyProduct.setProductId("P001");
+        dummyProduct.setProductName("Dummy Product");
+        dummyProduct.setProductQuantity(1);
+
+        List<Product> products = List.of(dummyProduct);
+        Order order = new Order("1", products, 1708560000L, "Safira");
+
+
+
 
         Payment payment = paymentService.addPayment(order, "VOUCHER", paymentData);
         assertNotNull(payment);
@@ -44,7 +55,16 @@ public class PaymentServiceTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("voucherCode", "INVALIDCODE");
 
-        Order order = new Order("2", null, 1708560000L, "Safira");
+        Product dummyProduct = new Product();
+        dummyProduct.setProductId("P001");
+        dummyProduct.setProductName("Dummy Product");
+        dummyProduct.setProductQuantity(1);
+
+        List<Product> products = List.of(dummyProduct);
+        Order order = new Order("1", products, 1708560000L, "Safira");
+
+
+
 
         Payment payment = paymentService.addPayment(order, "VOUCHER", paymentData);
         assertNotNull(payment);
