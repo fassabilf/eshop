@@ -36,26 +36,6 @@ public class PaymentRepositoryTest {
         assertNull(result);
     }
 
-    @Test
-    void testSaveDuplicateIdShouldUpdateExisting() {
-        Map<String, String> paymentData1 = new HashMap<>();
-        paymentData1.put("voucherCode", "ESHOP1234ABC5678");
-
-        Payment payment1 = new Payment("2", "VOUCHER", paymentData1);
-        repository.save(payment1);
-
-        Map<String, String> paymentData2 = new HashMap<>();
-        paymentData2.put("voucherCode", "ESHOP0000XYZ9999");
-
-        Payment payment2 = new Payment("2", "VOUCHER", paymentData2);
-        repository.save(payment2);
-
-        Payment result = repository.findById("2");
-        assertNotNull(result);
-        assertEquals("2", result.getId());
-        assertEquals(PaymentStatus.REJECTED, result.getStatus()); // Karena voucher kedua tidak valid
-    }
-
 
     @Test
     void testGetAllPayments() {

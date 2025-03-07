@@ -2,24 +2,18 @@ package id.ac.ui.cs.advprog.eshop.repository;
 
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PaymentRepository {
-    private final Map<String, Payment> payments = new HashMap<>();
+    private final Map<String, Payment> payments = new ConcurrentHashMap<>();
 
     public void save(Payment payment) {
-        if (payments.containsKey(payment.getId())) {
-            // Menggunakan data baru untuk validasi ulang
-            Payment updatedPayment = new Payment(
-                    payment.getId(),
-                    payment.getMethod(),
-                    payment.getPaymentData()
-            );
-            payments.put(payment.getId(), updatedPayment);
-        } else {
-            payments.put(payment.getId(), payment);
-        }
+        payments.put(payment.getId(), new Payment(
+                payment.getId(),
+                payment.getMethod(),
+                new HashMap<>(payment.getPaymentData()) // Memastikan data baru diproses ulang
+        ));
     }
-
 
 
 
