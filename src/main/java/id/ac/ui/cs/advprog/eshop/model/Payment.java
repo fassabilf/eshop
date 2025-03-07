@@ -7,33 +7,38 @@ import java.util.Map;
 public class Payment {
     private String id;
     private String method;
-    private String status;
+    private PaymentStatus status; // Use Enum instead of String
     private Map<String, String> paymentData;
 
     public Payment(String id, String method, Map<String, String> paymentData) {
         this.id = id;
         this.method = method;
         this.paymentData = paymentData;
-        this.status = determineStatus(method, paymentData);
+        this.status = determineStatus();
     }
 
-    private String determineStatus(String method, Map<String, String> paymentData) {
-        if ("VOUCHER".equals(method)) {
-            return validateVoucher(paymentData.get("voucherCode")) ? "SUCCESS" : "REJECTED";
-        } else if ("BANK_TRANSFER".equals(method)) {
-            return validateBankTransfer(paymentData) ? "SUCCESS" : "REJECTED";
+    private PaymentStatus determineStatus() {
+        if (method == null || paymentData == null) {
+            return PaymentStatus.REJECTED;
         }
-        return "REJECTED";
+
+        switch (method) {
+            case "VOUCHER":
+                return validateVoucher(paymentData.get("voucherCode")) ? PaymentStatus.SUCCESS : PaymentStatus.REJECTED;
+            case "BANK_TRANSFER":
+                return validateBankTransfer(paymentData) ? PaymentStatus.SUCCESS : PaymentStatus.REJECTED;
+            default:
+                return PaymentStatus.REJECTED;
+        }
     }
 
     private boolean validateVoucher(String code) {
-        if (code == null || code.length() != 16) return false;
-        if (!code.startsWith("ESHOP")) return false;
-        return code.replaceAll("\\D", "").length() == 8;
+        return code != null && code.length() == 16 && code.startsWith("ESHOP") &&
+                code.replaceAll("\\D", "").length() == 8;
     }
 
     private boolean validateBankTransfer(Map<String, String> paymentData) {
-        return paymentData.getOrDefault("bankName", "").length() > 0 &&
-                paymentData.getOrDefault("referenceCode", "").length() > 0;
+        return paymentData.getOrDefault("bankName", "").trim().length() > 0 &&
+                paymentData.getOrDefault("referenceCode", "").trim().length() > 0;
     }
 }
