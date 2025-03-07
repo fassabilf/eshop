@@ -7,8 +7,21 @@ public class PaymentRepository {
     private final Map<String, Payment> payments = new HashMap<>();
 
     public void save(Payment payment) {
-        payments.put(payment.getId(), payment);
+        if (payments.containsKey(payment.getId())) {
+            // Menggunakan data baru untuk validasi ulang
+            Payment updatedPayment = new Payment(
+                    payment.getId(),
+                    payment.getMethod(),
+                    payment.getPaymentData()
+            );
+            payments.put(payment.getId(), updatedPayment);
+        } else {
+            payments.put(payment.getId(), payment);
+        }
     }
+
+
+
 
     public Payment findById(String id) {
         return payments.get(id);

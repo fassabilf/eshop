@@ -3,11 +3,12 @@ package id.ac.ui.cs.advprog.eshop.model;
 import lombok.Getter;
 import java.util.Map;
 import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
+
 @Getter
 public class Payment {
     private String id;
     private String method;
-    private PaymentStatus status; // Use Enum instead of String
+    private PaymentStatus status;
     private Map<String, String> paymentData;
 
     public Payment(String id, String method, Map<String, String> paymentData) {
@@ -15,6 +16,11 @@ public class Payment {
         this.method = method;
         this.paymentData = paymentData;
         this.status = determineStatus();
+    }
+
+    public void updatePaymentData(Map<String, String> newPaymentData) {
+        this.paymentData = newPaymentData;
+        this.status = determineStatus(); // Recalculate status
     }
 
     private PaymentStatus determineStatus() {
@@ -41,8 +47,6 @@ public class Payment {
         String bankName = paymentData.getOrDefault("bankName", "");
         String referenceCode = paymentData.getOrDefault("referenceCode", "");
 
-        return (bankName != null && !bankName.trim().isEmpty()) &&
-                (referenceCode != null && !referenceCode.trim().isEmpty());
+        return !bankName.trim().isEmpty() && !referenceCode.trim().isEmpty();
     }
-
 }
