@@ -38,7 +38,11 @@ public class Payment {
     }
 
     private boolean validateBankTransfer(Map<String, String> paymentData) {
-        return paymentData.getOrDefault("bankName", "").trim().length() > 0 &&
-                paymentData.getOrDefault("referenceCode", "").trim().length() > 0;
+        String bankName = paymentData.getOrDefault("bankName", "");
+        String referenceCode = paymentData.getOrDefault("referenceCode", "");
+
+        return (bankName != null && !bankName.trim().isEmpty()) &&
+                (referenceCode != null && !referenceCode.trim().isEmpty());
     }
+
 }
