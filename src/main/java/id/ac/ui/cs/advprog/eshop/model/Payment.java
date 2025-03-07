@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.eshop.model;
 
 import lombok.Getter;
 import java.util.Map;
+import java.util.Objects;
 import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 
 @Getter
@@ -43,10 +44,13 @@ public class Payment {
                 code.replaceAll("\\D", "").length() == 8;
     }
 
-    private boolean validateBankTransfer(Map<String, String> paymentData) {
-        String bankName = paymentData.getOrDefault("bankName", "");
-        String referenceCode = paymentData.getOrDefault("referenceCode", "");
 
-        return !bankName.trim().isEmpty() && !referenceCode.trim().isEmpty();
+
+    private boolean validateBankTransfer(Map<String, String> paymentData) {
+        String bankName = Objects.requireNonNullElse(paymentData.get("bankName"), "").trim();
+        String referenceCode = Objects.requireNonNullElse(paymentData.get("referenceCode"), "").trim();
+
+        return !bankName.isEmpty() && !referenceCode.isEmpty();
     }
+
 }
