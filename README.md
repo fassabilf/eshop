@@ -12,6 +12,7 @@
 1. [**Module 1** - Coding Standards](#module-1)
 2. [**Module 2** - CI/CD & DevOps](#module-2)
 3. [**Module 3** - Maintainability & OO Principles](#module-3)
+4. [**Module 4** - Refactoring and TDD](#module-4)
 ---
 
 ## **Module 1**
@@ -214,3 +215,91 @@ Dalam proyek ini, saya telah menerapkan prinsip-prinsip SOLID berikut:
 
 3. **Ketergantungan yang Tinggi**  
    Tanpa DIP dan ISP, modul tingkat tinggi akan bergantung langsung pada implementasi konkret. Misalnya, jika `CarController` bergantung langsung pada `CarServiceImpl`, maka setiap perubahan pada service akan berdampak langsung pada controller, mengurangi fleksibilitas dan mempersulit pengujian.
+
+---
+### **Evaluasi TDD Flow berdasarkan Percival (2017)**
+Dalam penerapan **Test-Driven Development (TDD)** selama latihan ini, saya mengevaluasi alurnya berdasarkan **self-reflective questions** dari Percival (2017) dalam “Principles and Best Practice of Testing”. Berikut refleksi saya:
+
+#### **1. Apakah saya merasa TDD membantu saya dalam menulis kode yang lebih baik?**
+Ya, TDD membantu saya dalam beberapa hal:
+- **Memaksa saya untuk memahami persyaratan sebelum menulis kode.**
+    - Sebelum saya mengimplementasikan `PaymentService`, saya harus memahami bagaimana `Payment` dan `Order` bekerja, sehingga saya tidak langsung menulis kode tanpa perencanaan.
+- **Menghasilkan kode yang lebih modular dan lebih mudah diuji.**
+    - Karena saya mulai dengan tes, saya memastikan setiap komponen dapat diuji secara terpisah.
+- **Mencegah over-engineering.**
+    - Saya hanya menulis kode yang dibutuhkan untuk lolos dari tes, sehingga tidak ada fitur yang ditambahkan tanpa alasan.
+
+Namun, ada beberapa tantangan:
+- **Menulis tes sebelum implementasi terasa lebih sulit dibanding menulis kode langsung.**
+- **Beberapa tes gagal karena validasi yang tidak diperhitungkan sejak awal.**
+    - Misalnya, `Order` memiliki validasi produk tidak boleh kosong, tetapi tes awal tidak mempertimbangkan hal ini.
+
+#### **2. Apakah saya menemui kesulitan dalam menulis tes lebih dahulu?**
+Ya, beberapa kesulitan yang saya temui:
+- **Menentukan cakupan tes yang tepat.**
+    - Awalnya saya hanya menguji happy path, tetapi kemudian saya menyadari bahwa saya juga perlu menguji negative cases dan edge cases.
+- **Beberapa skenario sulit diuji karena bergantung pada objek lain.**
+    - Misalnya, `PaymentService` membutuhkan `PaymentRepository`, sehingga saya harus menggunakan **Mockito** untuk mocking.
+
+**Pelajaran untuk ke depan:**
+- **Gunakan lebih banyak edge cases sejak awal.**
+    - Misalnya, **uji input yang tidak valid lebih awal** untuk menghindari modifikasi besar di tengah jalan.
+- **Buat tes yang lebih granular dan independen** agar lebih mudah dipahami.
+
+#### **3. Apakah TDD membantu saya dalam debugging?**
+Sangat membantu.
+- **Tes yang gagal memberikan informasi langsung tentang masalahnya.**
+    - Saat `testSaveDuplicateIdShouldUpdateExisting` gagal, saya tahu bahwa status Payment tidak diperbarui dengan benar di repository.
+- **Saya bisa memperbaiki kode dengan lebih cepat dibanding debugging tanpa tes.**
+    - Karena setiap perubahan kecil diikuti dengan pengujian, saya bisa langsung mengetahui apakah perbaikan berhasil atau tidak.
+
+#### **4. Apakah TDD cukup efisien untuk proyek ini?**
+- **TDD sangat membantu dalam proyek kecil hingga menengah seperti ini.**
+    - Saya bisa memastikan bahwa setiap komponen bekerja sebelum melanjutkan ke tahap berikutnya.
+- **Namun, untuk proyek besar, TDD bisa terasa lambat jika tidak dilakukan dengan disiplin.**
+    - Banyaknya tes yang harus ditulis sejak awal bisa terasa berat.
+
+#### **5. Hal apa yang akan saya lakukan berbeda di masa depan?**
+- **Menulis lebih banyak tes sebelum implementasi.**
+    - Saat ini, beberapa edge cases baru ditambahkan setelah kode implementasi dibuat.
+- **Membuat mock lebih awal untuk menghindari dependensi yang sulit diisolasi.**
+    - Seperti yang saya alami pada `PaymentServiceTest`, yang bergantung pada `PaymentRepository`.
+
+---
+## **Module 4**
+### **Evaluasi TDD berdasarkan F.I.R.S.T Principle**
+**F.I.R.S.T** adalah prinsip untuk menilai kualitas pengujian. Berikut adalah refleksi saya terhadap tes yang saya buat:
+
+1. **Fast (Cepat)**
+    - **Sebagian besar tes berjalan dengan cepat**, karena hanya menguji unit kecil dari kode.
+    - Namun, jika ada dependency yang berat seperti database atau API eksternal, pengujian bisa lebih lambat.
+
+   **Perbaikan ke depan:**
+    - Menggunakan **Mock** lebih sering untuk mengisolasi unit yang diuji.
+    - Jika ada integrasi dengan database, gunakan **in-memory database** untuk mempercepat tes.
+
+2. **Independent (Independen)**
+    - Tes yang saya buat **sebagian besar independen**, terutama karena saya menggunakan Mockito untuk `PaymentRepository`.
+    - Namun, ada beberapa tes yang **bergantung pada data sebelumnya**, seperti `testGetAllPayments()`, yang bisa gagal jika `save()` gagal.
+
+   **Perbaikan ke depan:**
+    - **Gunakan data setup yang lebih jelas** di setiap tes untuk menghindari dependency antar tes.
+
+3. **Repeatable (Dapat Diulang)**
+    - Tes bisa dijalankan berkali-kali tanpa hasil yang berbeda, **kecuali jika ada perubahan pada dependensi eksternal**.
+
+   **Perbaikan ke depan:**
+    - Menggunakan **database in-memory** untuk memastikan tes selalu mendapatkan kondisi awal yang sama.
+
+4. **Self-validating (Validasi Mandiri)**
+    - **Tes sudah memenuhi prinsip ini**, karena setiap tes memiliki `assertEquals()` yang memastikan apakah hasil yang diharapkan sama dengan hasil aktual.
+    - Tidak perlu mengecek hasil tes secara manual.
+
+5. **Timely (Dibuat Sebelum Implementasi)**
+    - **Beberapa tes ditulis setelah implementasi, bukan sebelum.**
+    - Ini bertentangan dengan prinsip TDD.
+
+   **Perbaikan ke depan:**
+    - Menulis tes lebih dahulu **tanpa memikirkan implementasi dulu**, baru menulis kode setelahnya.
+
+---
